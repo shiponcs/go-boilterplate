@@ -1,0 +1,27 @@
+FROM golang:1.23.1-alpine AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /svc ./cmd/api/main.go
+
+# Final stage
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates tzdata \
+    && adduser -D -g '' appuser
+
+WORKDIR /app
+
+COPY --from=builder /svc .
+COPY pkg/translations /app/pkg/translations
+
+USER appuser
+
+EXPOSE 8080
+
+CMD ["./svc"]
