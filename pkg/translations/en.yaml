@@ -1,3 +1,6 @@
 widget_created: "Widget created successfully"
 widget_not_found: "Widget not found"
 widget_invalid_name: "Please provide a valid widget name"
+auth_invalid_code: "Missing or invalid authorization code"
+auth_state_mismatch: "Invalid or expired sign-up session, please try again"
+signup_failed: "Sign-up could not be completed, please try again"

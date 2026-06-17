@@ -5,10 +5,12 @@ package stores
 // field per new store and wire it in NewStoHolder.
 type StoHolder struct {
 	WidgetStore *WidgetStore
+	UserStore   *UserStore
 }
 
-func NewStoHolder(widgetStore *WidgetStore) *StoHolder {
+func NewStoHolder(widgetStore *WidgetStore, userStore *UserStore) *StoHolder {
 	return &StoHolder{
 		WidgetStore: widgetStore,
+		UserStore:   userStore,
 	}
 }

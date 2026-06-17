@@ -17,6 +17,7 @@ type Config struct {
 	Redis    RedisConfig
 	Logger   LoggerConfig
 	Pricing  PricingConfig
+	WorkOS   WorkOSConfig
 }
 
 // LoadConfig reads configuration from environment variables with sane defaults.
@@ -67,6 +68,11 @@ func LoadConfig() (*Config, error) {
 			BaseFare: v.GetFloat64("pricing.base_fare"),
 			PerUnit:  v.GetFloat64("pricing.per_unit"),
 		},
+		WorkOS: WorkOSConfig{
+			ApiKey:      v.GetString("workos.api_key"),
+			ClientID:    v.GetString("workos.client_id"),
+			RedirectURI: v.GetString("workos.redirect_uri"),
+		},
 	}
 	return cfg, nil
 }
@@ -92,4 +98,9 @@ func setDefaults(v *viper.Viper) {
 
 	v.SetDefault("pricing.base_fare", 50.0)
 	v.SetDefault("pricing.per_unit", 10.0)
+
+	// WorkOS credentials have no safe defaults; set them via env.
+	v.SetDefault("workos.api_key", "")
+	v.SetDefault("workos.client_id", "")
+	v.SetDefault("workos.redirect_uri", "http://localhost:8080/api/v1/auth/callback")
 }

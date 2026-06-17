@@ -10,7 +10,7 @@ import (
 
 // SetupRoutes builds the Gin engine and registers routes. It is the single
 // place that maps URLs to handler methods.
-func SetupRoutes(wh *handlers.WidgetHandler) *gin.Engine {
+func SetupRoutes(wh *handlers.WidgetHandler, ah *handlers.AuthHandler) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery(), middleware.RequestLogger())
@@ -25,6 +25,9 @@ func SetupRoutes(wh *handlers.WidgetHandler) *gin.Engine {
 	{
 		v1.POST("/widgets", wh.CreateWidget)
 		v1.GET("/widgets/:id", wh.GetWidget)
+
+		v1.GET("/auth/signup", ah.Signup)
+		v1.GET("/auth/callback", ah.Callback)
 	}
 
 	return r

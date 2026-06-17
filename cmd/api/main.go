@@ -42,13 +42,16 @@ func main() {
 		fx.Provide(
 			// handlers
 			handlers.NewWidgetHandler,
+			handlers.NewAuthHandler,
 			// core use-cases
 			core.NewWidget,
+			core.NewAuth,
 			// http router
 			api.SetupRoutes,
 		),
 		fx.Invoke(
 			localization.Init,
+			conn.RunMigrations,
 			setupHTTPServer,
 		),
 	).Run()

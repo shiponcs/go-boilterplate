@@ -62,3 +62,17 @@ func (s *store) ForgetWidget(id uint) error {
 	key := s.keyBuilder(keyWidget, id)
 	return s.client.Del(s.client.Context(), key).Err()
 }
+
+func (s *store) SetSignupState(state string, ttl time.Duration) error {
+	key := s.keyBuilder(keySignupState, state)
+	return s.client.Set(s.client.Context(), key, "1", ttl).Err()
+}
+
+func (s *store) ConsumeSignupState(state string) (bool, error) {
+	key := s.keyBuilder(keySignupState, state)
+	deleted, err := s.client.Del(s.client.Context(), key).Result()
+	if err != nil {
+		return false, err
+	}
+	return deleted > 0, nil
+}

@@ -13,4 +13,10 @@ export REDIS_HOST="${REDIS_HOST:-localhost}"
 export REDIS_PORT="${REDIS_PORT:-6379}"
 export LOGGER_LEVEL="${LOGGER_LEVEL:-info}"
 
+# WorkOS AuthKit (signup). Get the API key + client ID from the WorkOS dashboard;
+# the redirect URI must be registered there and match this service's callback.
+export WORKOS_API_KEY="${WORKOS_API_KEY:-}"
+export WORKOS_CLIENT_ID="${WORKOS_CLIENT_ID:-}"
+export WORKOS_REDIRECT_URI="${WORKOS_REDIRECT_URI:-http://localhost:8080/api/v1/auth/callback}"
+
 go run ./cmd/api/main.go

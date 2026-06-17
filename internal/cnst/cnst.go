@@ -7,6 +7,10 @@ const (
 	WidgetStatusInactive = "inactive"
 )
 
+const (
+	UserStatusActive = "active"
+)
+
 // Language codes used by the localization layer.
 const (
 	LangEN = "en"
