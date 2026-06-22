@@ -9,4 +9,9 @@ type AuthnResult struct {
 	FirstName     string
 	LastName      string
 	EmailVerified bool
+
+	// AccessToken/RefreshToken are the WorkOS session tokens. They are sealed
+	// into the session cookie and never returned to the client directly.
+	AccessToken  string
+	RefreshToken string
 }

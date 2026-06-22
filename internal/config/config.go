@@ -18,6 +18,7 @@ type Config struct {
 	Logger   LoggerConfig
 	Pricing  PricingConfig
 	WorkOS   WorkOSConfig
+	Session  SessionConfig
 }
 
 // LoadConfig reads configuration from environment variables with sane defaults.
@@ -73,6 +74,12 @@ func LoadConfig() (*Config, error) {
 			ClientID:    v.GetString("workos.client_id"),
 			RedirectURI: v.GetString("workos.redirect_uri"),
 		},
+		Session: SessionConfig{
+			CookieName:     v.GetString("session.cookie_name"),
+			CookiePassword: v.GetString("session.cookie_password"),
+			CookieDomain:   v.GetString("session.cookie_domain"),
+			Secure:         v.GetBool("session.secure"),
+		},
 	}
 	return cfg, nil
 }
@@ -103,4 +110,11 @@ func setDefaults(v *viper.Viper) {
 	v.SetDefault("workos.api_key", "")
 	v.SetDefault("workos.client_id", "")
 	v.SetDefault("workos.redirect_uri", "http://localhost:8080/api/v1/auth/callback")
+
+	// Session cookie. cookie_password seals the cookie and must be a 32-byte
+	// key set via env; cookie_domain is optional.
+	v.SetDefault("session.cookie_name", "wos_session")
+	v.SetDefault("session.cookie_password", "")
+	v.SetDefault("session.cookie_domain", "")
+	v.SetDefault("session.secure", true)
 }

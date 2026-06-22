@@ -18,4 +18,7 @@ type SignupCbCtx struct {
 	result *value.AuthnResult
 	User   *entity.User
 	Resp   *dto.UserResponse
+	// Tokens carries the WorkOS session tokens to the handler, which seals them
+	// into the session cookie.
+	Tokens *value.SessionTokens
 }

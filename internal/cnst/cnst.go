@@ -15,3 +15,8 @@ const (
 const (
 	LangEN = "en"
 )
+
+// Gin context keys for values stashed by middleware.
+const (
+	CtxUserKey = "current_user"
+)

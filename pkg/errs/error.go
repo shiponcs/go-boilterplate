@@ -52,6 +52,10 @@ func NewBadReq(logMsg string, clientMsg any) error {
 	return NewClientError(logMsg, clientMsg, http.StatusBadRequest)
 }
 
+func NewUnauthorized(logMsg, clientMsg string) error {
+	return NewClientError(logMsg, clientMsg, http.StatusUnauthorized)
+}
+
 func NewForbidden(logMsg, clientMsg string) error {
 	return NewClientError(logMsg, clientMsg, http.StatusForbidden)
 }

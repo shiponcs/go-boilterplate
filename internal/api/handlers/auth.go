@@ -3,10 +3,15 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 
+	"github.com/example/go-svc-boilerplate/internal/api/session"
+	"github.com/example/go-svc-boilerplate/internal/cnst"
+	"github.com/example/go-svc-boilerplate/internal/config"
 	"github.com/example/go-svc-boilerplate/internal/core"
 	"github.com/example/go-svc-boilerplate/internal/core/logouturl"
 	"github.com/example/go-svc-boilerplate/internal/core/signupcb"
 	"github.com/example/go-svc-boilerplate/internal/core/signupurl"
+	"github.com/example/go-svc-boilerplate/internal/models/entity"
+	"github.com/example/go-svc-boilerplate/pkg/errs"
 )
 
 // AuthHandler is the HTTP entry point for the WorkOS AuthKit signup flows. It
@@ -14,10 +19,11 @@ import (
 // logic lives here.
 type AuthHandler struct {
 	auth *core.Auth
+	cfg  *config.Config
 }
 
-func NewAuthHandler(auth *core.Auth) *AuthHandler {
-	return &AuthHandler{auth: auth}
+func NewAuthHandler(auth *core.Auth, cfg *config.Config) *AuthHandler {
+	return &AuthHandler{auth: auth, cfg: cfg}
 }
 
 // Signup returns the AuthKit hosted authorization URL the client should open to
@@ -45,19 +51,43 @@ func (h *AuthHandler) Callback(c *gin.Context) {
 		ServeErr(c, err)
 		return
 	}
+	if err := session.Set(c, h.cfg, ctx.Tokens); err != nil {
+		ServeErr(c, err)
+		return
+	}
 	ServeData(c, ctx.Resp)
 }
 
-// Logout returns the AuthKit hosted logout URL for ending a specific session.
+// Logout reads the session cookie, returns the AuthKit hosted logout URL for
+// ending the WorkOS session, and clears the local session cookie.
 func (h *AuthHandler) Logout(c *gin.Context) {
 	ctx := &logouturl.LogoutURLCtx{
-		Ctx:       h.auth.BaseCtx(lang(c)),
-		SessionID: c.Query("session_id"),
-		ReturnTo:  c.Query("return_to"),
+		Ctx:      h.auth.BaseCtx(lang(c)),
+		ReturnTo: c.Query("return_to"),
+	}
+	if tokens, err := session.Read(c, h.cfg); err == nil {
+		ctx.AccessToken = tokens.AccessToken
 	}
 	if err := logouturl.New(ctx).Do(&core.DoCtx{}); err != nil {
 		ServeErr(c, err)
 		return
 	}
+	session.Clear(c, h.cfg)
 	ServeData(c, ctx.Resp)
+}
+
+// Me returns the currently authenticated user. RequireAuth must run first; it
+// stashes the user under cnst.CtxUserKey.
+func (h *AuthHandler) Me(c *gin.Context) {
+	user, ok := c.Get(cnst.CtxUserKey)
+	if !ok {
+		ServeErr(c, errs.NewUnauthorized("no user in context", "not authenticated"))
+		return
+	}
+	u, ok := user.(*entity.User)
+	if !ok {
+		ServeErr(c, errs.NewUnauthorized("invalid user in context", "not authenticated"))
+		return
+	}
+	ServeData(c, h.auth.TransformUser(u))
 }

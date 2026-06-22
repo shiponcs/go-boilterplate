@@ -8,16 +8,21 @@ import (
 	"github.com/example/go-svc-boilerplate/pkg/errs"
 )
 
-// validate requires a session id because WorkOS logout revokes a concrete
-// session identified by sid.
+// validate requires an access token and extracts the WorkOS session id (sid)
+// from it, since WorkOS logout revokes a concrete session identified by sid.
 type validate struct {
 	ctx *LogoutURLCtx
 }
 
 func (v *validate) Do(*core.DoCtx) error {
-	if strings.TrimSpace(v.ctx.SessionID) == "" {
-		return errs.NewBadReq("missing session_id", "session_id is required")
+	if strings.TrimSpace(v.ctx.AccessToken) == "" {
+		return errs.NewUnauthorized("missing session", "not authenticated")
 	}
+	sid, err := v.ctx.Srv.AuthService.SessionIDFromToken(v.ctx.AccessToken)
+	if err != nil {
+		return errs.NewUnauthorized("cannot read session id: "+err.Error(), "not authenticated")
+	}
+	v.ctx.sid = sid
 	return nil
 }
 
@@ -27,7 +32,7 @@ type buildURL struct {
 }
 
 func (b *buildURL) Do(*core.DoCtx) error {
-	url, err := b.ctx.Srv.AuthService.LogoutURL(b.ctx.SessionID, b.ctx.ReturnTo)
+	url, err := b.ctx.Srv.AuthService.LogoutURL(b.ctx.sid, b.ctx.ReturnTo)
 	if err != nil {
 		return errs.NewInternalServer("failed to build logout url: "+err.Error(), "")
 	}

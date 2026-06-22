@@ -3,9 +3,11 @@ module github.com/example/go-svc-boilerplate
 go 1.23.1
 
 require (
+	github.com/MicahParks/keyfunc/v3 v3.8.0
 	github.com/gin-contrib/pprof v1.5.1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/spf13/viper v1.19.0
 	github.com/workos/workos-go/v4 v4.46.1
 	go.uber.org/fx v1.22.2
@@ -17,6 +19,7 @@ require (
 )
 
 require (
+	github.com/MicahParks/jwkset v0.11.0 // indirect
 	github.com/bytedance/sonic v1.12.4 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -64,6 +67,7 @@ require (
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect
 	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/time v0.9.0 // indirect
 	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

@@ -9,6 +9,7 @@ import (
 	"github.com/example/go-svc-boilerplate/internal/localization"
 	"github.com/example/go-svc-boilerplate/internal/models/dto"
 	"github.com/example/go-svc-boilerplate/internal/models/entity"
+	"github.com/example/go-svc-boilerplate/internal/models/value"
 	"github.com/example/go-svc-boilerplate/pkg/errs"
 )
 
@@ -88,6 +89,10 @@ func (r *response) Do(*core.DoCtx) error {
 		EmailVerified: u.EmailVerified,
 		Status:        u.Status,
 		CreatedAt:     u.CreatedAt.Unix(),
+	}
+	r.ctx.Tokens = &value.SessionTokens{
+		AccessToken:  r.ctx.result.AccessToken,
+		RefreshToken: r.ctx.result.RefreshToken,
 	}
 	return nil
 }

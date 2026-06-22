@@ -10,9 +10,12 @@ import (
 type LogoutURLCtx struct {
 	core.Ctx
 
-	SessionID string
-	ReturnTo  string
+	// AccessToken is read from the session cookie; its sid claim identifies the
+	// WorkOS session to terminate.
+	AccessToken string
+	ReturnTo    string
 
+	sid  string
 	url  string
 	Resp *dto.LogoutURLResponse
 }
