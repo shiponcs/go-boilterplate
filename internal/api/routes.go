@@ -28,6 +28,7 @@ func SetupRoutes(wh *handlers.WidgetHandler, ah *handlers.AuthHandler) *gin.Engi
 
 		v1.GET("/auth/signup", ah.Signup)
 		v1.GET("/auth/callback", ah.Callback)
+		v1.GET("/auth/logout", ah.Logout)
 	}
 
 	return r

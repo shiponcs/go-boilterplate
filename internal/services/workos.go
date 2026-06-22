@@ -42,6 +42,17 @@ func (s *workosAuthService) SignupURL(state string) (string, error) {
 	return u.String(), nil
 }
 
+func (s *workosAuthService) LogoutURL(sessionID, returnTo string) (string, error) {
+	u, err := usermanagement.GetLogoutURL(usermanagement.GetLogoutURLOpts{
+		SessionID: sessionID,
+		ReturnTo:  returnTo,
+	})
+	if err != nil {
+		return "", fmt.Errorf("build logout url: %w", err)
+	}
+	return u.String(), nil
+}
+
 func (s *workosAuthService) AuthenticateWithCode(ctx context.Context, code string) (*value.AuthnResult, error) {
 	resp, err := usermanagement.AuthenticateWithCode(ctx, usermanagement.AuthenticateWithCodeOpts{
 		ClientID: s.clientID,

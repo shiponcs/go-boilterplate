@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/example/go-svc-boilerplate/internal/core"
+	"github.com/example/go-svc-boilerplate/internal/core/logouturl"
 	"github.com/example/go-svc-boilerplate/internal/core/signupcb"
 	"github.com/example/go-svc-boilerplate/internal/core/signupurl"
 )
@@ -41,6 +42,20 @@ func (h *AuthHandler) Callback(c *gin.Context) {
 		State: c.Query("state"),
 	}
 	if err := signupcb.New(ctx).Do(&core.DoCtx{}); err != nil {
+		ServeErr(c, err)
+		return
+	}
+	ServeData(c, ctx.Resp)
+}
+
+// Logout returns the AuthKit hosted logout URL for ending a specific session.
+func (h *AuthHandler) Logout(c *gin.Context) {
+	ctx := &logouturl.LogoutURLCtx{
+		Ctx:       h.auth.BaseCtx(lang(c)),
+		SessionID: c.Query("session_id"),
+		ReturnTo:  c.Query("return_to"),
+	}
+	if err := logouturl.New(ctx).Do(&core.DoCtx{}); err != nil {
 		ServeErr(c, err)
 		return
 	}

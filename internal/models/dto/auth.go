@@ -8,6 +8,12 @@ type SignupURLResponse struct {
 	AuthorizationURL string `json:"authorization_url"`
 }
 
+// LogoutURLResponse is returned by GET /auth/logout — the WorkOS hosted URL
+// the client should open to terminate the active AuthKit session.
+type LogoutURLResponse struct {
+	LogoutURL string `json:"logout_url"`
+}
+
 // UserResponse is the API shape of a signed-up user, returned by the callback.
 type UserResponse struct {
 	ID            uint   `json:"id"`

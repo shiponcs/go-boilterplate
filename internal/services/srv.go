@@ -19,6 +19,8 @@ type AuthService interface {
 	// SignupURL builds the AuthKit hosted authorization URL for sign-up,
 	// carrying the given CSRF state.
 	SignupURL(state string) (string, error)
+	// LogoutURL builds the AuthKit logout URL for ending a session.
+	LogoutURL(sessionID, returnTo string) (string, error)
 	// AuthenticateWithCode exchanges an AuthKit authorization code for the
 	// authenticated user.
 	AuthenticateWithCode(ctx context.Context, code string) (*value.AuthnResult, error)
