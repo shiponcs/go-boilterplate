@@ -45,8 +45,20 @@ func TestUnseal_Tampered(t *testing.T) {
 	}
 }
 
-func TestSeal_BadKeySize(t *testing.T) {
-	if _, err := Seal([]byte("short"), []byte("x")); err == nil {
-		t.Fatal("expected error for non-32-byte key")
+func TestSeal_ShortKeyDerived(t *testing.T) {
+	// Any non-empty key works (it is hashed to 32 bytes).
+	sealed, err := Seal([]byte("short"), []byte("x"))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	got, err := Unseal([]byte("short"), sealed)
+	if err != nil || string(got) != "x" {
+		t.Fatalf("round trip failed: got %q err %v", got, err)
+	}
+}
+
+func TestSeal_EmptyKey(t *testing.T) {
+	if _, err := Seal([]byte(""), []byte("x")); err == nil {
+		t.Fatal("expected error for empty key")
 	}
 }
